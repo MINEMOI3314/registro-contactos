@@ -40,7 +40,7 @@
             <input type="submit" class="save-button" value="guardar">
 
 
-            <input type="file" id="foto" name="foto" required><br>
+            <input type="file" id="foto" name="foto"><br>
             <div class="contact-photo1">
                 <img id="display_foto" src="Foto_contactos/Default.jpg" style="width: 350px">
                 <script>
@@ -96,49 +96,68 @@
         $mail_3 = filter_input(INPUT_POST,"correo_3", FILTER_SANITIZE_SPECIAL_CHARS);
 
         $foto = $_FILES['foto']['tmp_name'];
-        $foto_ubi ='Foto_contactos/' . basename($_FILES['foto']['name']);          
-        
-        //ejecucion del sql querry
-        if(!file_exists($foto_ubi)){
-            //subiendo el nombre y la foto a la db
+        $foto_ubi ='Foto_contactos/' . basename($_FILES['foto']['name']);
+
+        if (file_exists($foto_ubi)){
+            $info = pathinfo($foto_ubi);
+            $name = $info['filename'];
+            $extension = isset($info['extension']) ? "." . $info['extension'] :"";
+            
+            $counter = 1;
+            while (file_exists('Foto_contactos/' . $name . "_" . $counter . $extension)) {
+            $counter++;
+        }
+        $foto_ubi = 'Foto_contactos/'. $name . "_" . $counter . $extension; 
+
+        }
+
+        //compruebo si se debe subir la foto por el usuario o dejarlo en el default
+        if (!empty($foto)){
             copy($foto,$foto_ubi);
             $sql_1 = "INSERT INTO contacto (nombre, foto) VALUES ('$nombre', '$foto_ubi')";
-
-            //obteniendo la llave primaria de la incersion anterior
-            //y metiendola en una variable
-            mysqli_query($conn, $sql_1);
-            $sql_select = "SELECT id_contacto FROM `contacto` WHERE nombre = '$nombre'";
-            $sql_result = mysqli_query($conn, $sql_select);
-            $sql_key = $sql_result->fetch_row();
-            $sql_key[0];
-
-            //declaracion de los strings de los querys
-            $sql_2_1 = "INSERT INTO correo (id_contacto, correo) VALUE ($sql_key[0], '$mail_1')";
-            $sql_3_1 = "INSERT INTO numero (id_contacto, numero) VALUE ($sql_key[0], $telefono_1)";
-
-
-            //subida del correo
-            mysqli_query($conn, $sql_2_1);
-            if (!empty($_POST["correo_2"])){
-                $sql_2_2 = "INSERT INTO correo (id_contacto, correo) VALUE ($sql_key[0], '$mail_2')";
-                mysqli_query($conn, $sql_2_2);
-            }
-            if (!empty($_POST["correo_3"])){
-                $sql_2_3 = "INSERT INTO correo (id_contacto, correo) VALUE ($sql_key[0], '$mail_3')";
-                mysqli_query($conn, $sql_2_3);
-            }
-
-            //subida del numero de telefono
-            mysqli_query($conn, $sql_3_1);
-            if (!empty($_POST["numero_2"])){
-                $sql_3_2 = "INSERT INTO numero (id_contacto, numero) VALUE ($sql_key[0], $telefono_2)";
-                mysqli_query($conn, $sql_3_2);
-            }
-            if (!empty($_POST["numero_3"])){
-                $sql_3_3 = "INSERT INTO numero (id_contacto, numero) VALUE ($sql_key[0], $telefono_3)";
-                mysqli_query($conn, $sql_3_3);
-            }
+            echo "true";
+        }else{
+            $sql_1 = "INSERT INTO contacto (nombre) VALUES ('$nombre')";
+            echo "false";
         }
+        
+        //ejecucion del sql querry
+        
+        //obteniendo la llave primaria de la incersion anterior
+        //y metiendola en una variable
+        mysqli_query($conn, $sql_1);
+        $sql_select = "SELECT id_contacto FROM `contacto` WHERE nombre = '$nombre'";
+        $sql_result = mysqli_query($conn, $sql_select);
+        $sql_key = $sql_result->fetch_row();
+        $sql_key[0];
+
+        //declaracion de los strings de los querys
+        $sql_2_1 = "INSERT INTO correo (id_contacto, correo) VALUE ($sql_key[0], '$mail_1')";
+        $sql_3_1 = "INSERT INTO numero (id_contacto, numero) VALUE ($sql_key[0], $telefono_1)";
+
+
+        //subida del correo
+        mysqli_query($conn, $sql_2_1);
+        if (!empty($_POST["correo_2"])){
+            $sql_2_2 = "INSERT INTO correo (id_contacto, correo) VALUE ($sql_key[0], '$mail_2')";
+            mysqli_query($conn, $sql_2_2);
+        }
+        if (!empty($_POST["correo_3"])){
+            $sql_2_3 = "INSERT INTO correo (id_contacto, correo) VALUE ($sql_key[0], '$mail_3')";
+            mysqli_query($conn, $sql_2_3);
+        }
+
+        //subida del numero de telefono
+        mysqli_query($conn, $sql_3_1);
+        if (!empty($_POST["numero_2"])){
+            $sql_3_2 = "INSERT INTO numero (id_contacto, numero) VALUE ($sql_key[0], $telefono_2)";
+            mysqli_query($conn, $sql_3_2);
+        }
+        if (!empty($_POST["numero_3"])){
+            $sql_3_3 = "INSERT INTO numero (id_contacto, numero) VALUE ($sql_key[0], $telefono_3)";
+            mysqli_query($conn, $sql_3_3);
+        }
+    
         
 
     }
