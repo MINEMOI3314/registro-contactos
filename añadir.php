@@ -42,7 +42,7 @@
 
             <input type="file" id="foto" name="foto"><br>
             <div class="contact-photo1">
-                <img id="display_foto" src="Foto_contactos/Default.jpg" style="width: 350px">
+                <img id="display_foto" src="Foto_contactos/Default.jpg" style="height: 350px">
                 <script>
                     // Get the file input element and the image preview element
                     const imageInput = document.getElementById('foto');
@@ -158,7 +158,7 @@
             mysqli_query($conn, $sql_3_3);
         }
     
-        
+        header("Location: ".$_SERVER['PHP_SELF']);
 
     }
 
