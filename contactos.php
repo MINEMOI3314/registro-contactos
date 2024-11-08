@@ -66,8 +66,8 @@
                 if (isset($key_numero[2])){
                     echo"$key_numero[2]<br>";
                 }
+
                 echo "CORREO(S):<br>$key_correo[0]<br>";
-                
                 if (isset($key_correo[1])){
                     echo"$key_correo[1]<br>";
                 }
@@ -76,17 +76,21 @@
                 }
                 echo "</div>
                 <div class=\"contact-actions\">
-                    <button>Eliminar</button>
+                    <button><a href=\"confirmacion.php\">Eliminar</a></button>
                     <button><a href=\"editar.php\">Modificar</a></button>
                 </div>
-            </div>
+                </div>
                 ";
                 unset($key_correo);
-                unset($key_numero);
+                unset($key_numero);                
             }
         ?>
 
+        
 
+        </form>
+
+        
 
 
 

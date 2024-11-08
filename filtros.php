@@ -15,7 +15,7 @@
         <input type="text" placeholder="Buscar">
     </header>
 
-    <form>
+    <form <?php htmlspecialchars($_SERVER["PHP_SELF"]) ?> method="POST">
         
         <label for="nombre">Nombre Completo:</label>
         <input type="text" id="nombre" name="nombre" placeholder="Nombre Completo">
